@@ -70,19 +70,25 @@ for m in used_models:
 text = st.text_input("Input Sentence ('[MASK]' for the masking token)")
 k = st.number_input("top_k", min_value=1, max_value=100, value=10, step=1)
 
+st.subheader('LM predictions')
+
 if '[MASK]' not in text:
     st.text('the "[MASK]" must appear in the text')
 else:
     if text != '':
+        progress_bar = st.progress(0)
+
         model_predictions = []
-        for model, tokenizer in zip(models, tokenizers):
+        for ind, (model, tokenizer) in enumerate(zip(models, tokenizers)):
             preds = get_predictions(text, tokenizer, model, k=k)
             model_predictions.append(preds)
+            progress_bar.progress(int((float(ind + 1) / len(models)) * 100))
+        progress_bar.progress(100)
+        progress_bar.empty()
 
         dict_data = {}
         for model, answers in zip(used_models, model_predictions):
             dict_data[model] = answers
         df = pd.DataFrame(dict_data)
 
-        st.subheader('LM predictions')
         st.dataframe(df, width=1000, height=1000)
