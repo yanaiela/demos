@@ -109,7 +109,7 @@ else:
 
         mask_indices = [m.start() for m in re.finditer('\[MASK\]', text)]
         for ind, (model_predictions, mask_ind) in enumerate(zip(model_predictions_per_mask, mask_indices)):
-            markdown_text = text[:mask_ind] + '*' + MASK + '*' + text[mask_ind + len(MASK):]
+            markdown_text = text[:mask_ind] + '**' + MASK + '**' + text[mask_ind + len(MASK):]
             markdown_text = markdown_text.replace('[MASK]', '\[MASK\]')
             st.write(f'#{ind + 1} mask:' + markdown_text)
             dict_data = {}
